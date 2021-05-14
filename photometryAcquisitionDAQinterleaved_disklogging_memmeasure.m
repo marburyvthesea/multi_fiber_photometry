@@ -1,4 +1,4 @@
-function [outputStatus, mem_usage] = photometryAcquisitionDAQinterleaved_disklogging_memmeasure(inputCam, frames)
+function [outputStatus, mem_usage] = photometryAcquisitionDAQinterleaved_disklogging_memmeasure(inputCam, frames, pdir)
 
 %% must initialize DAQ session inside parallel function
 %measure startup time
@@ -22,7 +22,7 @@ freq = 20 ;
 
 %
 filetime = datestr(datetime,'yyyymmdd-HHMM');
-save_dir = 'F:\photometry_testing' ;
+save_dir = pdir ;
 addpath(genpath(save_dir)) ;
 vidfile = [save_dir, '\', filetime, '_', imaqhwinfo(inputCam).AdaptorName, ...
     '_', imaqhwinfo(inputCam).DeviceName];
@@ -30,7 +30,7 @@ vidfile = [save_dir, '\', filetime, '_', imaqhwinfo(inputCam).AdaptorName, ...
 %
 vidfile = VideoWriter(vidfile);
 vidfile.FrameRate = freq ;
-inputCam.LoggingMode = 'memory';
+inputCam.LoggingMode = 'disk';
 inputCam.DiskLogger = vidfile;
 
 trigger_times = datetime(zeros(frames,1), 0, 0, 'format', 'HH:mm:ss.SSS');

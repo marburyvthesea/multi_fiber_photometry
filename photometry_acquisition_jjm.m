@@ -1,6 +1,6 @@
 
 %path to files on scanimage computer 
-acquisition_file_path = 'C:\Users\scanimage\Documents\JJM\photometry_acquisition\jjm';
+acquisition_file_path = 'C:\Users\scanimage\Documents\JJM\photometry_acquisition\multi_fiber_photometry';
 addpath(genpath(acquisition_file_path));
 
 %init system with options for needed components
@@ -8,12 +8,12 @@ addpath(genpath(acquisition_file_path));
 %[pdir, cam, behavCam, dq] = init_system_jjm(options) ;
 %init with photometry camera as webcam for testing 
 
-[pdir, cam, behavCam, dq] = init_system_jjm('photometryCam_name', 'pointgrey', ...
+[pdir, cam, behavCam, dq] = init_system_jjm('photometryCam_name', 'winvideo', ...
                                             'photometryCam_devicenum', 1, ...
-                                            'photometryCam_imgformat', 'F7_Mono8_480x300_Mode5', ... 
-                                            'behavCam_name', 'winvideo', ...
+                                            'photometryCam_imgformat', 'RGB24_744x480', ... 
+                                            'behavCam_name', 'off', ...
                                             'behavCam_devicenum', 1, ...  
-                                            'behavCam_imgformat', 'MJPG_640x360', ...
+                                            'behavCam_imgformat', 'off', ...
                                             'DAQ', 'off');
 %% extract this into separate function to call for acqusitions
 frames_to_acquire=50 ;
@@ -40,6 +40,9 @@ if exist('f_2') && strcmp(f_2.State, 'running')
     memory
 end
 %% then can plot results asynchronously 
+
+%use ROI measure video here 
+analyze2fiber2vid(roimat1, roimat2);
 
 %load from videos
 
