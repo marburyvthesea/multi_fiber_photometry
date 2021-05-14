@@ -1,4 +1,4 @@
-function [outputStatus] = photometryAcquisitionDAQinterleaved_disklogging(inputCam, frames)
+function [outputStatus] = photometryAcquisitionDAQinterleaved_disklogging(inputCam, frames, pdir)
 
 %% must initialize DAQ session inside parallel function
 %analog output - laser trigger
@@ -8,7 +8,7 @@ outputSingleScan(DAQ_session,[0 0])
 %digital output - camera trigger
 DAQ_digital_session = daq.createSession('ni');
 DAQ_digital_session.addDigitalChannel('Dev1','Port0/Line0','OutputOnly')
-outputSingleScan(DAQ_digital_session,[0])
+outputSingleScan(DAQ_digital_session,[0]);
 
 %%init camera properties
 triggerconfig(inputCam, 'manual');
@@ -18,7 +18,7 @@ freq = 20 ;
 
 %
 filetime = datestr(datetime,'yyyymmdd-HHMM');
-save_dir = 'F:\photometry_testing' ;
+save_dir = pdir ;
 addpath(genpath(save_dir)) ;
 vidfile = [save_dir, '\', filetime, '_', imaqhwinfo(inputCam).AdaptorName, ...
     '_', imaqhwinfo(inputCam).DeviceName];
@@ -31,7 +31,7 @@ inputCam.DiskLogger = vidfile;
 
 trigger_times = datetime(zeros(frames,1), 0, 0, 'format', 'HH:mm:ss.SSS');
 DAQ_times = datetime(zeros(frames,1), 0, 0, 'format', 'HH:mm:ss.SSS');
-mem_usage = 
+
 
 open(vidfile);
 start(inputCam);

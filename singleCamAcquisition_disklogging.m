@@ -1,4 +1,4 @@
-function [outputStatus] = singleCamAcquisition_disklogging(inputCam, frames)
+function [outputStatus] = singleCamAcquisition_disklogging(inputCam, frames, pdir)
  
 %%init
 triggerconfig(inputCam, 'manual');
@@ -8,7 +8,7 @@ freq = 20 ;
 
 %
 filetime = datestr(datetime,'yyyymmdd-HHMM');
-save_dir = 'F:\photometry_testing' ;
+save_dir = pdir ;
 addpath(genpath(save_dir)) ;
 vidfile = [save_dir, '\', filetime, '_', imaqhwinfo(inputCam).AdaptorName, ...
     '_', imaqhwinfo(inputCam).DeviceName];
