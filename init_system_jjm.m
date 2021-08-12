@@ -22,7 +22,7 @@ prev_cam = imaqfind; delete(prev_cam); %clear all; close all;
 %% set path
 %global pdir
 pdir = uigetdir ;
-cd(pdir) ;
+%cd(pdir) ;
 %% FLIR camera config
 % create video input object
 % conifgure video object for manual triggering 

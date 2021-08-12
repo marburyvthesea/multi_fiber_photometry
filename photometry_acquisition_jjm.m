@@ -19,7 +19,7 @@ addpath(genpath(acquisition_file_path));
 frames_to_acquire=50 ;
 %DAQ turns on in call to photometryAcquisitionDAQinterleaved_disklogging
 %parallel loop
-% inputs: function_hangle, num_outputs, varible list of input args
+% inputs: function_handle, num_outputs, varible list of input args
 
 if ischar(cam)==0 && isobject(cam) 
     f = parfeval(@photometryAcquisitionDAQinterleaved_disklogging_memmeasure, 2, cam, frames_to_acquire, pdir);
