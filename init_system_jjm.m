@@ -49,9 +49,9 @@ else strcmp(options.behavCam_name,'off')
 end 
 %% DAQ config
 if strcmp(options.DAQ, 'ni')
-    dq = daq.createSession('ni');
+    %dq = daq.createSession('ni');
     %pre 2020a code 
-    %ch=dq.addAnalogOutputChannel('Dev1',0:1,'Voltage');
+    %ch=dq.addAnalogOutputChannel('Dev2',0:1,'Voltage');
     %all off 
     %outputSingleScan(dq,[0 0])
     %post 2020a code
@@ -61,9 +61,10 @@ if strcmp(options.DAQ, 'ni')
     % execute trigger frequency by external code in the loop
     %write(dq, [0 0]);    % set DAQ channels off
     %assignin('base','dq',dq);
-    disp("DAQ done");
+    %disp("DAQ done");
 else strcmp(options.DAQ, 'off')
     dq = 'off'; 
+    disp('DAQ off');
 end 
 end
 

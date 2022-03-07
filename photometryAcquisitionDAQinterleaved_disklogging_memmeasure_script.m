@@ -1,26 +1,31 @@
-function [outputStatus, mem_usage] = photometryAcquisitionDAQinterleaved_disklogging_memmeasure(inputCam, frames, pdir)
+inputCam=cam;  
+frames=1000;
+pdir
 
 %% must initialize DAQ session inside parallel function
-%measure startup time
-startup_time = datetime(zeros(2,1), 0, 0, 'format', 'HH:mm:ss.SSS');
-startup_time(1,1)= datetime('now', 'format', 'HH:mm:ss.SSS');
 
 %analog output - laser trigger
 DAQ_session = daq.createSession('ni');
-DAQ_session.addAnalogOutputChannel('Dev1',0:1,'Voltage');
+%%
+DAQ_session.addAnalogOutputChannel('Dev2',0:1,'Voltage');
 outputSingleScan(DAQ_session,[0 0])
 %digital output - camera trigger
-DAQ_digital_session = daq.createSession('ni');
-DAQ_digital_session.addDigitalChannel('Dev1','Port0/Line0','OutputOnly')
-outputSingleScan(DAQ_digital_session,[0])
+%DAQ_digital_session = daq.createSession('ni');
+%DAQ_digital_session.addDigitalChannel('Dev2','Port0/Line0','OutputOnly')
+%outputSingleScan(DAQ_digital_session,[0])
+
+%%
 
 %%init camera properties
 triggerconfig(inputCam, 'manual');
 inputCam.FramesPerTrigger = 1;
 inputCam.TriggerRepeat = Inf;
-freq = 20 ;
 
-%
+%% call function to acquire frames
+acquiredFrames = pCamAcquireFnTriggerDAQ(inputCam, pdir, frames, DAQ_session); 
+disp(acquiredFrames); 
+
+%%
 filetime = datestr(datetime,'yyyymmdd-HHMM');
 save_dir = pdir ;
 addpath(genpath(save_dir)) ;
@@ -29,7 +34,7 @@ vidfile = [save_dir, '\', filetime, '_', imaqhwinfo(inputCam).AdaptorName, ...
 
 %
 vidfile = VideoWriter(vidfile);
-vidfile.FrameRate = freq ;
+vidfile.FrameRate = 20 ;
 inputCam.LoggingMode = 'disk';
 inputCam.DiskLogger = vidfile;
 
@@ -41,6 +46,7 @@ open(vidfile);
 start(inputCam);
 startup_time(2,1)= datetime('now', 'format', 'HH:mm:ss.SSS');
 
+
 i=1;
 while i <=frames
 %for i = 1:frames
@@ -49,7 +55,7 @@ while i <=frames
         outputSingleScan(DAQ_session,[0 1])
         DAQ_times(i,1)= datetime('now', 'format', 'HH:mm:ss.SSS');
         % wait 10msec
-        java.lang.Thread.sleep(10000);
+        java.lang.Thread.sleep(10);
         % get image from camera
         trigger(inputCam) ;
         trigger_times(i,1)= datetime('now', 'format', 'HH:mm:ss.SSS');
@@ -96,18 +102,17 @@ expname_DAQ = [save_dir, '\', filetime, '_DAQ', ...
 expname_DAQ_init = [save_dir, '\', filetime, '_DAQ', ...
     '_', 'DAQinit_time', '_time','.txt'];
 
-dlmwrite(expname_DAQ_init,char(startup_time),'delimiter','');
 dlmwrite(expname_DAQ,char(DAQ_times),'delimiter','');
-
+%%
 removeChannel(DAQ_session,1);
 removeChannel(DAQ_session,1);
 
 outputStatus='done' ;
+%%
 release(DAQ_session) ;
 clear DAQ_session ; 
 
 %disp(['finished'+outputStatus]);
-end
 
 
 
