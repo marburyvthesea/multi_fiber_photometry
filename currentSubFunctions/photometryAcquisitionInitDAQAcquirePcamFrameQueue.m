@@ -1,4 +1,4 @@
-function [outputStatus] = photometryAcquisitionInitDAQAcquirePcamDataStream(inputDataQueue, inputCam, numSweeps, frames, inputDAQSetting, continuousDAQParams, pdir, inputROIMask)
+function [outputStatus] = photometryAcquisitionInitDAQAcquirePcamFrameQueue(inputDataQueue, inputFrameDataQueue, inputCam, numSweeps, frames, inputDAQSetting, continuousDAQParams, pdir, inputROIMask)
 
 %% must initialize DAQ session inside parallel function
 
@@ -29,7 +29,7 @@ while i <= numSweeps
     %init camera properties
     %select function to use here based on DAQ trigger parameters
     if strcmp(inputDAQSetting, 'continuous')
-        [acquiredFrames, outputVidFilePath] = pCamAcquireFnContinuousDAQ(inputCam, pdir, frames); 
+        [acquiredFrames, outputVidFilePath] = pCamAcquireFnContinuousDAQFrameQueue(inputFrameDataQueue, inputCam, pdir, frames, inputROIMask); 
     else
         [acquiredFrames, outputVidFilePath] = pCamAcquireFnTriggerDAQ(inputCam, pdir, frames, DAQ_session); 
     end

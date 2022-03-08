@@ -10,6 +10,7 @@ for i = 1:loadedVideo.NumFrames
     activeFrame = read(loadedVideo, i);
     roiMean(i, 1) = mean(activeFrame(inputROIMask), 'all');
 end
+figure(1)
 plot(roiMean);
 end
 
