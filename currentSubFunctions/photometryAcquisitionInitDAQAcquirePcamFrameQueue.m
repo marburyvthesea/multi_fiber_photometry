@@ -28,8 +28,9 @@ i=1;
 while i <= numSweeps
     %init camera properties
     %select function to use here based on DAQ trigger parameters
+    %on continuous function, acquire 10 more frames for warm up
     if strcmp(inputDAQSetting, 'continuous')
-        [acquiredFrames, outputVidFilePath] = pCamAcquireFnContinuousDAQFrameQueue(inputFrameDataQueue, inputCam, pdir, frames, inputROIMask); 
+        [acquiredFrames, outputVidFilePath] = pCamAcquireFnContinuousDAQFrameQueue(inputFrameDataQueue, inputCam, pdir, frames+10, inputROIMask); 
     else
         [acquiredFrames, outputVidFilePath] = pCamAcquireFnTriggerDAQ(inputCam, pdir, frames, DAQ_session); 
     end

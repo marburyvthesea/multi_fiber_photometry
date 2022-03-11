@@ -2,6 +2,12 @@ function [outputFramesAcquired, outputVidFilePath] = pCamAcquireFnContinuousDAQF
 %%Acquire set number of frames from camera, output to files with timestamps
 % DAQ system is triggered outside function
 
+%create arrays for storing and updating real time data here
+%skip 1st 10 frames
+%frameIndex = zeros(inputFrames-10);
+%imgDataArray = zeros(1200, 1920, 3); 
+%imgDataArray = cell(1,inputFrames-10);  
+
 %create files for timestamps
 filetime = datestr(datetime,'yyyymmdd-HHMMSS');
 save_dir = pdir ;
@@ -9,6 +15,7 @@ addpath(genpath(save_dir)) ;
 vidFilePath = [save_dir, '\', filetime, '_', imaqhwinfo(inputCam).AdaptorName, ...
     '_', imaqhwinfo(inputCam).DeviceName, '.avi'];
 outputVidFilePath = vidFilePath;
+%trigger_times = zeros(inputFrames); 
 
 %create output file
 vidfile = VideoWriter(vidFilePath);
@@ -29,8 +36,11 @@ while i <=inputFrames
         % get image from camera
         trigger(inputCam) ;
         trigger_times(i,1)= datetime('now', 'format', 'HH:mm:ss.SSS');
-        img_data = getdata(inputCam);
-        send(inputFrameDataQueue, {i, img_data, inputROIMask});
+        imgData = getdata(inputCam);
+        %if i>=10
+        %    imgDataArray{1, i-9} = imgData; 
+        %    send(inputFrameDataQueue, {i-10, trigger_times(i, 1), imgDataArray, inputROIMask});
+        %end 
         i=i+1;       
     else 
         disp('waiting for disk writing'); 
